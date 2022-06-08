@@ -1,5 +1,7 @@
 # SWC plugin for typed-redux-saga
 
+[![npm](https://img.shields.io/npm/v/swc-plugin-typed-redux-saga.svg)](https://www.npmjs.com/package/swc-plugin-typed-redux-saga)
+
 This plugin adds [typed-redux-saga](https://github.com/agiledigital/typed-redux-saga) macro support for SWC.
 
 Tested with 12.1.7-canary.31
