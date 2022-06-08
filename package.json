@@ -5,7 +5,8 @@
   "author": "Tomas Cerskus",
   "license": "MIT",
   "keywords": [
-    "swc-plugin"
+    "swc-plugin",
+    "typed-redux-saga"
   ],
   "repository": "github:tomas-c/swc-plugin-typed-redux-saga",
   "main": "target/wasm32-wasi/release/swc_plugin_typed_redux_saga.wasm",
