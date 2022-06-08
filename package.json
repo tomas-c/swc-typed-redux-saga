@@ -1,12 +1,13 @@
 {
   "name": "swc-plugin-typed-redux-saga",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "author": "Tomas Cerskus",
   "license": "MIT",
   "keywords": [
     "swc-plugin"
   ],
+  "repository": "github:tomas-c/swc-plugin-typed-redux-saga",
   "main": "target/wasm32-wasi/release/swc_plugin_typed_redux_saga.wasm",
   "scripts": {
     "prepublishOnly": "cargo build --release --target=wasm32-wasi"
