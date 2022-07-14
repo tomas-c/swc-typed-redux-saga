@@ -1,5 +1,5 @@
-use std::{collections::HashSet, fmt::Write};
-use swc_plugin::{ast::*, plugin_transform, syntax_pos::DUMMY_SP, TransformPluginProgramMetadata};
+use std::collections::HashSet;
+use swc_plugin::{ast::*, plugin_transform, TransformPluginProgramMetadata};
 
 struct TransformVisitor {
     local_idents: HashSet<String>,
@@ -41,6 +41,8 @@ impl VisitMut for TransformVisitor {
                 }
             }
         }
+        
+        yield_expr.visit_mut_children_with(self);
     }
 }
 
@@ -125,10 +127,32 @@ mod tests {
         |_| transform_visitor(),
         replaces_multiple_yield_delegates,
         r#"import {put, call} from "typed-redux-saga/macro";
-        function* test1() { yield* put(); }"
+        function* test1() { yield* put(); }
         function* test1() { yield* call(); }"#,
         r#"import {put, call} from "redux-saga/effects";
-        function* test1() { yield put(); }"
+        function* test1() { yield put(); }
         function* test1() { yield call(); }"#
+    );
+
+    test!(
+        swc_ecma_parser::Syntax::default(),
+        |_| transform_visitor(),
+        replaces_nested_yield_delegates,
+        r#"
+        import {put, call, fork} from "typed-redux-saga/macro";
+        function* test1() { 
+            yield* fork(function* backgroundTask() {
+                yield* put(); 
+            })
+        }
+        "#,
+        r#"
+        import {put, call, fork} from "redux-saga/effects";
+        function* test1() { 
+            yield fork(function* backgroundTask() {
+                yield put(); 
+            })
+        }
+        "#
     );
 }
