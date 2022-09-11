@@ -1,5 +1,11 @@
 use std::collections::HashSet;
-use swc_plugin::{ast::*, plugin_transform, TransformPluginProgramMetadata};
+use swc_core::{
+    ecma::ast::Program,
+    plugin::{plugin_transform, proxies::TransformPluginProgramMetadata},
+    ecma::ast::*,
+    ecma::visit::{as_folder, FoldWith, VisitMut, VisitMutWith},
+};
+
 
 struct TransformVisitor {
     local_idents: HashSet<String>,
@@ -54,7 +60,11 @@ pub fn process_transform(program: Program, _metadata: TransformPluginProgramMeta
 
 #[cfg(test)]
 mod tests {
-    use swc_ecma_transforms_testing::test;
+    use swc_core::{
+        ecma::visit::{Fold},
+        ecma::parser::{Syntax},
+        ecma::transforms::testing::test
+    };
 
     use super::*;
 
@@ -63,7 +73,7 @@ mod tests {
     }
 
     test!(
-        swc_ecma_parser::Syntax::default(),
+        Syntax::default(),
         |_| transform_visitor(),
         replaces_import,
         r#"import {put} from "typed-redux-saga/macro";"#,
@@ -71,7 +81,7 @@ mod tests {
     );
 
     test!(
-        swc_ecma_parser::Syntax::default(),
+        Syntax::default(),
         |_| transform_visitor(),
         replaces_aliased_import,
         r#"import {put as _put} from "typed-redux-saga/macro";"#,
@@ -79,7 +89,7 @@ mod tests {
     );
 
     test!(
-        swc_ecma_parser::Syntax::default(),
+        Syntax::default(),
         |_| transform_visitor(),
         replaces_yield_delegate,
         r#"import {put} from "typed-redux-saga/macro";
@@ -89,7 +99,7 @@ mod tests {
     );
 
     test!(
-        swc_ecma_parser::Syntax::default(),
+        Syntax::default(),
         |_| transform_visitor(),
         replaces_yield_delegate_with_args,
         r#"import {put} from "typed-redux-saga/macro";
@@ -99,7 +109,7 @@ mod tests {
     );
 
     test!(
-        swc_ecma_parser::Syntax::default(),
+        Syntax::default(),
         |_| transform_visitor(),
         replaces_aliased_yield_delegate,
         r#"import {put as _put} from "typed-redux-saga/macro";
@@ -109,7 +119,7 @@ mod tests {
     );
 
     test!(
-        swc_ecma_parser::Syntax::default(),
+        Syntax::default(),
         |_| transform_visitor(),
         replaces_correct_yield_delegate,
         r#"import {put} from "typed-redux-saga/macro";
@@ -123,7 +133,7 @@ mod tests {
     );
 
     test!(
-        swc_ecma_parser::Syntax::default(),
+        Syntax::default(),
         |_| transform_visitor(),
         replaces_multiple_yield_delegates,
         r#"import {put, call} from "typed-redux-saga/macro";
@@ -135,7 +145,7 @@ mod tests {
     );
 
     test!(
-        swc_ecma_parser::Syntax::default(),
+        Syntax::default(),
         |_| transform_visitor(),
         replaces_nested_yield_delegates,
         r#"
