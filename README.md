@@ -4,7 +4,7 @@
 
 This plugin adds [typed-redux-saga](https://github.com/agiledigital/typed-redux-saga) macro support for SWC.
 
-Tested with Next.js version 12.3.0
+Tested with Next.js version 12.3.1
 
 
 ## Installation
