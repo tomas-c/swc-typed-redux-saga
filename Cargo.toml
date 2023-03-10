@@ -1,6 +1,6 @@
 [package]
 name = "swc-plugin-typed-redux-saga"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 
 [lib]
@@ -15,9 +15,9 @@ crate-type = ["cdylib"]
 # opt-level = "z"
 
 [dependencies]
-serde = "1.0.136"
-serde_json = "1.0.79"
-swc_core = { version = "0.43.23", features = ["plugin_transform", "ecma_ast", "ecma_visit"] }
+serde = "1.0.152"
+serde_json = "1.0.93"
+swc_core = { version = "0.59.26", features = ["ecma_plugin_transform", "ecma_ast", "ecma_visit"] }
 
 [dev-dependencies]
-swc_core = { version = "0.43.23", features = ["testing_transform", "ecma_parser"] }
+swc_core = { version = "0.59.26", features = ["testing_transform", "ecma_parser"] }
