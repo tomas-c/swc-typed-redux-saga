@@ -17,7 +17,7 @@ crate-type = ["cdylib"]
 [dependencies]
 serde = "1.0.152"
 serde_json = "1.0.93"
-swc_core = { version = "0.75.23", features = ["ecma_plugin_transform", "ecma_ast", "ecma_visit"] }
+swc_core = { version = "0.78.24", features = ["ecma_plugin_transform", "ecma_ast", "ecma_visit"] }
 
 [dev-dependencies]
-swc_core = { version = "0.75.23", features = ["testing_transform", "ecma_parser"] }
+swc_core = { version = "0.78.24", features = ["testing_transform", "ecma_parser"] }
