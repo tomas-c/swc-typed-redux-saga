@@ -3,7 +3,7 @@ use swc_core::{
     ecma::ast::Program,
     plugin::{plugin_transform, proxies::TransformPluginProgramMetadata},
     ecma::ast::*,
-    ecma::visit::{as_folder, FoldWith, VisitMut, VisitMutWith},
+    ecma::visit::{visit_mut_pass, VisitMut, VisitMutWith},
 };
 
 
@@ -55,24 +55,23 @@ impl VisitMut for TransformVisitor {
 /// Transforms a [`Program`].
 #[plugin_transform]
 pub fn process_transform(program: Program, _metadata: TransformPluginProgramMetadata) -> Program {
-    program.fold_with(&mut as_folder(TransformVisitor::new()))
+    program.apply(&mut visit_mut_pass(TransformVisitor::new()))
 }
 
 #[cfg(test)]
 mod tests {
     use swc_core::{
-        ecma::visit::{Fold},
         ecma::parser::{Syntax},
-        ecma::transforms::testing::test
+        ecma::transforms::testing::test_inline
     };
 
     use super::*;
 
-    fn transform_visitor() -> impl 'static + Fold + VisitMut {
-        as_folder(TransformVisitor::new())
+    fn transform_visitor() -> impl 'static + VisitMut + Pass {
+        visit_mut_pass(TransformVisitor::new())
     }
 
-    test!(
+    test_inline!(
         Syntax::default(),
         |_| transform_visitor(),
         replaces_import,
@@ -80,7 +79,7 @@ mod tests {
         r#"import {put} from "redux-saga/effects";"#
     );
 
-    test!(
+    test_inline!(
         Syntax::default(),
         |_| transform_visitor(),
         replaces_aliased_import,
@@ -88,7 +87,7 @@ mod tests {
         r#"import {put as _put} from "redux-saga/effects";"#
     );
 
-    test!(
+    test_inline!(
         Syntax::default(),
         |_| transform_visitor(),
         replaces_yield_delegate,
@@ -98,7 +97,7 @@ mod tests {
         function* test() { yield put(); }"#
     );
 
-    test!(
+    test_inline!(
         Syntax::default(),
         |_| transform_visitor(),
         replaces_yield_delegate_with_args,
@@ -108,7 +107,7 @@ mod tests {
         function* test() { yield put("test"); }"#
     );
 
-    test!(
+    test_inline!(
         Syntax::default(),
         |_| transform_visitor(),
         replaces_aliased_yield_delegate,
@@ -118,7 +117,7 @@ mod tests {
         function* test() { yield _put(); }"#
     );
 
-    test!(
+    test_inline!(
         Syntax::default(),
         |_| transform_visitor(),
         replaces_correct_yield_delegate,
@@ -132,7 +131,7 @@ mod tests {
         function* test() { yield* call(); }"#
     );
 
-    test!(
+    test_inline!(
         Syntax::default(),
         |_| transform_visitor(),
         replaces_multiple_yield_delegates,
@@ -144,7 +143,7 @@ mod tests {
         function* test1() { yield call(); }"#
     );
 
-    test!(
+    test_inline!(
         Syntax::default(),
         |_| transform_visitor(),
         replaces_nested_yield_delegates,
